@@ -26,6 +26,6 @@ sealed class Routes(val route: String, @StringRes val title: Int) {
 }
 
 sealed class BottomBarRoutes(val route: String, @DrawableRes var icon: Int, @StringRes val title: Int) {
-    object ListHygiene: BottomBarRoutes("listHygiene", R.drawable.hygiene_icon, R.string.list_hygiene_title)
-    object ListMedicine: BottomBarRoutes("listMedicine", R.drawable.medicine_icon, R.string.list_therapy_title)
+    object ListProcedure: BottomBarRoutes("listProcedure", R.drawable.procedure_icon, R.string.list_procedure_title)
+    object ListTherapy: BottomBarRoutes("listTherapy", R.drawable.therapy_icon, R.string.list_therapy_title)
 }

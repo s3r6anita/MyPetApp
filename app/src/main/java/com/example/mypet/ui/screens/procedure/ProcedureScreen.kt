@@ -1,4 +1,4 @@
-package com.example.mypet.ui.screens.therapy
+package com.example.mypet.ui.screens.procedure
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
@@ -28,12 +28,12 @@ import com.example.mypet.nav.Routes
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TherapyScreen(navController: NavHostController) {
+fun ProcedureScreen(navController: NavHostController) {
 
     Scaffold(
         topBar = {
             MyPetTopBar(
-                text = stringResource(Routes.Therapy.title),
+                text = stringResource(Routes.Procedure.title),
                 canNavigateBack = navController.previousBackStackEntry != null,
                 navigateUp = { navController.navigateUp() },
                 actions = {
@@ -50,15 +50,15 @@ fun TherapyScreen(navController: NavHostController) {
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    navController.navigate(Routes.UpdateTherapy.route) { launchSingleTop = true }
+                    navController.navigate(Routes.UpdateProcedure.route) { launchSingleTop = true }
                 },
                 modifier = Modifier
             ) {
-                Icon(Icons.Rounded.Edit, "Update medicine")
+                Icon(Icons.Rounded.Edit, "Редактировать процедуру")
             }
         },
         floatingActionButtonPosition = FabPosition.End
-    ) {innerPadding ->
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -67,9 +67,11 @@ fun TherapyScreen(navController: NavHostController) {
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Medicine",
+                text = "Procedure",
                 fontSize = 30.sp
             )
         }
+
     }
 }
+

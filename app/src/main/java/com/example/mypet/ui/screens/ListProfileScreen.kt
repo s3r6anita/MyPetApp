@@ -10,19 +10,22 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -31,24 +34,26 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.core.content.edit
 import androidx.navigation.NavHostController
+import com.example.mypet.MyPetTopBar
 import com.example.mypet.R
 import com.example.mypet.data.Pet
 import com.example.mypet.nav.MAIN
 import com.example.mypet.nav.Routes
 import java.util.Date
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListProfileScreen(navController: NavHostController, context: Context) {
 
-
     val pets = mutableListOf(
         Pet("Мурзик", "Кот", "Британская", "мужской", Date(), "черный", "123456789012345"),
-//        Pet("Шарик", "Собака", "Дворняжка", "мужской", Date(), "рыжий", "234567890123456"),
-//        Pet("Мася", "Кошка", "Персидская", "женский", Date(), "белый", "345678901234567"),
+        Pet("Шарик", "Собака", "Дворняжка", "мужской", Date(), "рыжий", "234567890123456"),
+        Pet("Мася", "Кошка", "Персидская", "женский", Date(), "белый", "345678901234567"),
 //        Pet("Мурзик", "Кот", "Британская", "мужской", Date(), "черный", "123456789012345"),
 //        Pet("Шарик", "Собака", "Дворняжка", "мужской", Date(), "рыжий", "234567890123456"),
 //        Pet("Мася", "Кошка", "Персидская", "женский", Date(), "белый", "345678901234567"),
@@ -68,73 +73,96 @@ fun ListProfileScreen(navController: NavHostController, context: Context) {
 
     val scrollState = rememberScrollState()
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(vertical = 10.dp)
-                .align(Alignment.Center),
-        ) {
-
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 10.dp, start = 25.dp, end = 25.dp)
-                    .toggleable(
-                        value = rememberUserChoice,
-                        onValueChange = { onStateChange(!rememberUserChoice) },
-                        role = Role.Checkbox
-                    ),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Checkbox(
-                    checked = rememberUserChoice,
-                    onCheckedChange = null
-                )
-                Text(
-                    text = "Запоминать выбор питомца на время сессия приложения",
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier
-                        .padding(start = 16.dp)
-//                        .weight(1f)
-                )
-            }
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .height(400.dp)
-                    .padding(vertical = 10.dp, horizontal = 25.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.End
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .verticalScroll(scrollState)
-                ) {
-                    pets.forEach { pet ->
-                        PetItem(
-                            pet = pet,
-                            canExit = rememberUserChoice,
-                            navController = navController
+    Scaffold(
+        topBar = {
+            MyPetTopBar(
+                text = stringResource(id = R.string.list_profile_title),
+                canNavigateBack = navController.previousBackStackEntry != null,
+                navigateUp = { navController.navigateUp() },
+                actions = {
+                    IconButton(
+                        onClick = { navController.navigate(Routes.BugReport.route) { launchSingleTop = true } }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Email,
+                            contentDescription = stringResource(R.string.delete_button)
                         )
                     }
                 }
+            )
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    navController.navigate(Routes.CreateProfile.route) { launchSingleTop = true }
+                },
+                modifier = Modifier
+            ) {
+                Icon(Icons.Rounded.Add, "Добавить животное")
             }
-        }
+        },
+        floatingActionButtonPosition = FabPosition.End
+    )
+    { innerPadding ->
 
-        FloatingActionButton(
-            onClick = {
-                navController.navigate(Routes.CreateProfile.route) { launchSingleTop = true }
-            },
+        Box(
             modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .offset((-20).dp, (-20).dp)
-        ) {
-            Icon(Icons.Rounded.Add, "Добавить животное")
+                .fillMaxWidth()
+                .padding(innerPadding),
+            contentAlignment = Alignment.Center
+        ){
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+            ) {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 10.dp, start = 25.dp, end = 25.dp)
+                        .toggleable(
+                            value = rememberUserChoice,
+                            onValueChange = { onStateChange(!rememberUserChoice) },
+                            role = Role.Checkbox
+                        ),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Checkbox(
+                        checked = rememberUserChoice,
+                        onCheckedChange = null
+                    )
+                    Text(
+                        text = "Запоминать выбор питомца на время сессия приложения",
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier
+                            .padding(start = 16.dp)
+//                        .weight(1f)
+                    )
+                }
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(400.dp)
+                        .padding(vertical = 10.dp, horizontal = 25.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .verticalScroll(scrollState)
+                    ) {
+                        pets.forEach { pet ->
+                            PetItem(
+                                pet = pet,
+                                canExit = rememberUserChoice,
+                                navController = navController
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -147,7 +175,7 @@ fun PetItem(pet: Pet, canExit: Boolean, navController: NavHostController) {
     ListItem(
         modifier = Modifier
             .padding(vertical = 8.dp, horizontal = 16.dp)
-            .background(Color.LightGray)
+            .background(Color.Red)
             .clickable {
                 navController.navigate(MAIN) {
                     if (canExit) {

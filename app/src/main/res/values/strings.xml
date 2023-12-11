@@ -10,7 +10,7 @@
     <string name="profile_title">Профиль</string>
     <string name="update_profile_title">Редактирование профиля</string>
 
-    <string name="list_hygiene_title">Процедуры</string>
+    <string name="list_procedure_title">Процедуры</string>
     <string name="list_therapy_title">Лечение</string>
 
     <string name="create_procedure">Создание процедуры</string>

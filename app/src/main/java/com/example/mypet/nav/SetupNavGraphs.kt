@@ -1,6 +1,7 @@
 package com.example.mypet.nav
 
 import android.content.Context
+import androidx.compose.animation.EnterTransition
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -12,7 +13,11 @@ fun SetupNavGraphs(navController: NavHostController, context: Context, modifier:
         navController = navController,
         route = ROOT,
         startDestination = START,
-        modifier = modifier
+        // Отключение анимаций перехода между экранами
+        enterTransition = { EnterTransition.None },
+//        exitTransition = { ExitTransition.None },
+//        popEnterTransition = { EnterTransition.None },
+//        popExitTransition = { ExitTransition.None },
     ) {
         StartNavGraph(navController, context)
         MainNavGraph(navController)

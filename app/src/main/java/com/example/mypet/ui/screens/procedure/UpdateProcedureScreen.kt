@@ -1,4 +1,5 @@
-package com.example.mypet.ui.screens.therapy
+package com.example.mypet.ui.screens.procedure
+
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,17 +17,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.mypet.MyPetTopBar
-import com.example.mypet.nav.BottomBarRoutes
 import com.example.mypet.nav.Routes
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun CreateTherapyScreen(navController: NavHostController) {
+fun UpdateProcedureScreen(navController: NavHostController) {
     Scaffold(
         topBar = {
             MyPetTopBar(
-                text = stringResource(Routes.CreateTherapy.title),
+                text = stringResource(Routes.UpdateProcedure.title),
                 canNavigateBack = navController.previousBackStackEntry != null,
                 navigateUp = { navController.navigateUp() },
                 actions = {}
@@ -41,14 +41,14 @@ fun CreateTherapyScreen(navController: NavHostController) {
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Create Medicine",
+                text = "Update Procedure",
                 fontSize = 30.sp
             )
             Button(
                 modifier = Modifier.padding(10.dp),
                 onClick = {
-                    navController.navigate(BottomBarRoutes.ListTherapy.route) {
-                        popUpTo(BottomBarRoutes.ListTherapy.route) {
+                    navController.navigate(Routes.Procedure.route) {
+                        popUpTo(Routes.Procedure.route) {
                             inclusive = true
                         }
                         launchSingleTop = true

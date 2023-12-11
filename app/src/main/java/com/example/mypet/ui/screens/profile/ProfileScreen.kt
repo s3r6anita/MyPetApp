@@ -1,139 +1,140 @@
 package com.example.mypet.ui.screens.profile
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.BoxScopeInstance.align
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.mypet.MyPetTopBar
 import com.example.mypet.data.Pet
-import com.example.mypet.nav.BottomBarRoutes
+import com.example.mypet.dateFormat
 import com.example.mypet.nav.Routes
 import com.example.mypet.nav.START
 import java.util.Date
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(navController: NavHostController) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = "Profile Screen",
-            fontSize = 30.sp
-        )
-        Button(
-            modifier = Modifier.padding(10.dp),
-            onClick = {
-                navController.navigate(Routes.UpdateProfile.route) {
-                    launchSingleTop = true
-                }
-            }
-        ) {
-            Text(text = "Редактировать")
-        }
 
-        Button(
-            modifier = Modifier.padding(10.dp),
-            onClick = {
-                navController.navigate(START) {
-                    popUpTo(BottomBarRoutes.ListHygiene.route) {
-                        inclusive = true
+    val pet = Pet("Шарик", "Собака", "Дворняжка", "мужской", Date(), "рыжий", "234567890123456")
+
+    Scaffold(
+        topBar = {
+            MyPetTopBar(
+                text = stringResource(Routes.Profile.title),
+                canNavigateBack = navController.previousBackStackEntry != null,
+                navigateUp = { navController.navigateUp() },
+                actions = {
+                    IconButton(onClick = {
+                        navController.navigate(START) {
+                            popUpTo(Routes.ListProfile.route) {
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                        }
                     }
-                    launchSingleTop = true
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.ExitToApp,
+                            contentDescription = "Выход"
+                        )
+                    }
                 }
+            )
+        },
+
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    navController.navigate(Routes.UpdateProfile.route) {
+                        launchSingleTop = true
+                    }
+                },
+                modifier = Modifier
+            ) {
+                Icon(Icons.Rounded.Edit, "Изменить профиль питомца")
             }
+        },
+
+        floatingActionButtonPosition = FabPosition.End
+
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(horizontal = 20.dp),
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.Center,
         ) {
-            Text(text = "Выход")
+            Text(
+                text = "Информация о питомце",
+                style = MaterialTheme.typography.headlineSmall,
+                modifier = Modifier.padding(bottom = 20.dp),
+//                fontSize = 24.sp,
+//                fontWeight = FontWeight.Bold,
+            )
+            TextComponent(
+                header = "Кличка",
+                value = pet.nickname
+            )
+            TextComponent(
+                header = "Вид",
+                value = pet.view
+            )
+            TextComponent(
+                header = "Порода",
+                value = pet.breed
+            )
+            TextComponent(
+                header = "Пол",
+                value = pet.paul
+            )
+            TextComponent(
+                header = "Дата рождения",
+                value = dateFormat.format(pet.birthday)
+            )
+            TextComponent(
+                header = "Окрас",
+                value = pet.coat
+            )
+            TextComponent(
+                header = "Номер микрочипа",
+                value = pet.microchipNumber
+            )
         }
     }
 }
 
 @Composable
-fun ProfileScreen(navController: NavHostController) {
-
-    val pet = Pet("Мурзик", "Кот", "Британская", "мужской", Date(), "черный", "123456789012345")
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    ) {
-        Text(
-            text = "Информация о питомце",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-        Text(
-            text = "Кличка: ${pet.nickname}",
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-        Text(
-            text = "Вид: ${pet.view}",
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-        Text(
-            text = "Порода: ${pet.breed}",
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-        Text(
-            text = "Пол: ${pet.paul}",
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-        Text(
-            text = "Дата рождения: ${pet.birthday}",
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-        Text(
-            text = "Окрас: ${pet.coat}",
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-        Text(
-            text = "Номер микрочипа: ${pet.microchipNumber}",
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-    }
-    FloatingActionButton(
-        onClick = {
-            navController.navigate(Routes.UpdateProfile.route) {
-                launchSingleTop = true
-            }
-        },
-        modifier = Modifier
-            .align(Alignment.BottomEnd)
-            .offset((-20).dp, (-20).dp)
-    ) {
-        Icon(Icons.Rounded.Add, "Добавить животное")
-    }
+fun TextComponent(header: String, value: String) {
+    Text(
+        text = header,
+        style = MaterialTheme.typography.labelLarge,
+        modifier = Modifier.padding(bottom = 4.dp),
+//        fontSize = 17.sp,
+//        fontWeight = FontWeight.SemiBold,
+    )
+    Text(
+        text = value,
+        style = MaterialTheme.typography.bodyLarge,
+        modifier = Modifier.padding(bottom = 12.dp)
+//        fontSize = 20.sp,
+    )
 }

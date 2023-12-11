@@ -7,9 +7,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.example.mypet.ui.screens.BugReportScreen
 import com.example.mypet.ui.screens.ListProfileScreen
-import com.example.mypet.ui.screens.hygiene.CreateProcedureScreen
-import com.example.mypet.ui.screens.hygiene.ProcedureScreen
-import com.example.mypet.ui.screens.hygiene.UpdateProcedureScreen
+import com.example.mypet.ui.screens.procedure.CreateProcedureScreen
+import com.example.mypet.ui.screens.procedure.ProcedureScreen
+import com.example.mypet.ui.screens.procedure.UpdateProcedureScreen
 import com.example.mypet.ui.screens.profile.CreateProfileScreen
 import com.example.mypet.ui.screens.profile.ProfileScreen
 import com.example.mypet.ui.screens.profile.UpdateProfileScreen
@@ -33,10 +33,10 @@ fun NavGraphBuilder.StartNavGraph(navController: NavHostController, context: Con
             CreateProfileScreen(navController)
         }
         composable(route = Routes.Profile.route) {
-            ProfileScreen (navController)
+            ProfileScreen(navController)
         }
         composable(route = Routes.UpdateProfile.route) {
-            UpdateProfileScreen(navController)
+            UpdateProfileScreen(navController, context)
         }
 
 

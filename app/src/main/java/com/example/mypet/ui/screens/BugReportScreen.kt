@@ -1,5 +1,6 @@
 package com.example.mypet.ui.screens
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -10,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -19,11 +22,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.mypet.MyPetTopBar
 import com.example.mypet.nav.Routes
 
+@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter", "IntentReset",
+    "UnusedMaterial3ScaffoldPaddingParameter"
+)
 @Composable
 fun BugReportScreen(navController: NavHostController, context: Context) {
 
@@ -58,30 +67,41 @@ fun BugReportScreen(navController: NavHostController, context: Context) {
                         Toast.makeText(context, "Произошла ошибка", Toast.LENGTH_SHORT).show()
                     }
                 },
-                dialogTitle = "Переход на почту",
+                dialogTitle = "Переход в почтовое приложение",
                 dialogText = "Для отправки сообщения об ошибке будет использован Ваш почтовый аккаунт. Желаете продолжить?"
             )
         }
     }
 
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = "Bug Report",
-            fontSize = 30.sp
-        )
-        Button(
-            modifier = Modifier.padding(10.dp),
-            onClick = {
-                openAlertDialog = true
-            }
+    Scaffold(
+        topBar = {
+            MyPetTopBar(
+                text = stringResource(Routes.BugReport.title),
+                canNavigateBack = navController.previousBackStackEntry != null,
+                navigateUp = { navController.navigateUp() },
+                actions = {}
+            )
+        },
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Text(text = "Отправить отчет об ошибке")
+            Text(
+                text = "Bug Report",
+                fontSize = 30.sp
+            )
+            Button(
+                modifier = Modifier.padding(10.dp),
+                onClick = {
+                    openAlertDialog = true
+                }
+            ) {
+                Text(text = "Отправить отчет об ошибке")
+            }
         }
     }
 }

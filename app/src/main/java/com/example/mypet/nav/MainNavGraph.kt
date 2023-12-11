@@ -10,12 +10,12 @@ import com.example.mypet.ui.screens.ListTherapyScreen
 fun NavGraphBuilder.MainNavGraph(navController: NavHostController) {
     navigation(
         route = MAIN,
-        startDestination = BottomBarRoutes.ListHygiene.route
+        startDestination = BottomBarRoutes.ListProcedure.route
     ) {
-        composable(route =  BottomBarRoutes.ListHygiene.route) {
+        composable(route =  BottomBarRoutes.ListProcedure.route) {
             ListProcedureScreen(navController)
         }
-        composable(route =  BottomBarRoutes.ListMedicine.route) {
+        composable(route =  BottomBarRoutes.ListTherapy.route) {
             ListTherapyScreen(navController)
         }
     }
