@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Мой Питомец</string>
+    <string name="back_button">Назад</string>
+    <string name="delete_button">Удалить</string>
+
+    
+    <string name="list_profile_title">Питомцы</string>
+    <string name="bug_report_title">Отчет об ошибке</string>
+    <string name="create_profile_title">Создание профиля</string>
+    <string name="profile_title">Профиль</string>
+    <string name="update_profile_title">Редактирование профиля</string>
+
+    <string name="list_hygiene_title">Процедуры</string>
+    <string name="list_therapy_title">Лечение</string>
+
+    <string name="create_procedure">Создание процедуры</string>
+    <string name="procedure">Процедура</string>
+    <string name="update_procedure">Редактирование процедуры</string>
+
+    <string name="create_therapy">Создание терапии</string>
+    <string name="therapy">Терапия</string>
+    <string name="update_therapy">Редактирование терапии</string>
+</resources>
