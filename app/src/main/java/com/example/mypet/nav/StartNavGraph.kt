@@ -5,6 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.example.mypet.data.Pet
 import com.example.mypet.ui.screens.BugReportScreen
 import com.example.mypet.ui.screens.ListProfileScreen
 import com.example.mypet.ui.screens.procedure.CreateProcedureScreen
@@ -17,23 +18,23 @@ import com.example.mypet.ui.screens.therapy.CreateTherapyScreen
 import com.example.mypet.ui.screens.therapy.TherapyScreen
 import com.example.mypet.ui.screens.therapy.UpdateTherapyScreen
 
-fun NavGraphBuilder.StartNavGraph(navController: NavHostController, context: Context) {
+fun NavGraphBuilder.StartNavGraph(navController: NavHostController, context: Context, pets: List<Pet>) {
     navigation(
         route = START,
         startDestination = Routes.ListProfile.route
     ) {
         composable(route = Routes.ListProfile.route) {
-            ListProfileScreen(navController, context)
+            ListProfileScreen(navController, context, pets)
         }
         composable(route = Routes.BugReport.route) {
             BugReportScreen(navController, context)
         }
 
         composable(route = Routes.CreateProfile.route) {
-            CreateProfileScreen(navController)
+            CreateProfileScreen(navController, context)
         }
         composable(route = Routes.Profile.route) {
-            ProfileScreen(navController)
+            ProfileScreen(navController, context)
         }
         composable(route = Routes.UpdateProfile.route) {
             UpdateProfileScreen(navController, context)
@@ -41,24 +42,24 @@ fun NavGraphBuilder.StartNavGraph(navController: NavHostController, context: Con
 
 
         composable(route = Routes.CreateProcedure.route) {
-            CreateProcedureScreen(navController)
+            CreateProcedureScreen(navController, context)
         }
         composable(route = Routes.Procedure.route) {
             ProcedureScreen(navController)
         }
         composable(route = Routes.UpdateProcedure.route) {
-            UpdateProcedureScreen(navController)
+            UpdateProcedureScreen(navController, context)
         }
 
 
         composable(route = Routes.CreateTherapy.route) {
-            CreateTherapyScreen(navController)
+            CreateTherapyScreen(navController, context)
         }
         composable(route = Routes.Therapy.route) {
             TherapyScreen(navController)
         }
         composable(route = Routes.UpdateTherapy.route) {
-            UpdateTherapyScreen(navController)
+            UpdateTherapyScreen(navController, context)
         }
     }
 }

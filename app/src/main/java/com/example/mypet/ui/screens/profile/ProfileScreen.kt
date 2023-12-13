@@ -1,13 +1,16 @@
 package com.example.mypet.ui.screens.profile
 
+import android.content.Context
+import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.rounded.Edit
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -23,16 +26,15 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.mypet.MyPetTopBar
 import com.example.mypet.data.Pet
+import com.example.mypet.data.pets
 import com.example.mypet.dateFormat
 import com.example.mypet.nav.Routes
 import com.example.mypet.nav.START
-import java.util.Date
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen(navController: NavHostController) {
+fun ProfileScreen(navController: NavHostController, context: Context) {
 
-    val pet = Pet("Шарик", "Собака", "Дворняжка", "мужской", Date(), "рыжий", "234567890123456")
+    val pet = pets[0]
 
     Scaffold(
         topBar = {
@@ -41,6 +43,23 @@ fun ProfileScreen(navController: NavHostController) {
                 canNavigateBack = navController.previousBackStackEntry != null,
                 navigateUp = { navController.navigateUp() },
                 actions = {
+                    IconButton(onClick = {
+                        val message = formatPet(pet)
+                        val intent = Intent(Intent.ACTION_SEND).apply {
+                            putExtra(Intent.EXTRA_TEXT, message)
+                            type = "text/plain"
+                        }
+                        try{
+                            context.startActivity(Intent.createChooser(intent, "Отправить сведения о питомце"))
+                        } catch (e: Exception) {
+                            Toast.makeText(context, "Произошла ошибка", Toast.LENGTH_SHORT).show()
+                        }          }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Share,
+                            contentDescription = "Выход"
+                        )
+                    }
                     IconButton(onClick = {
                         navController.navigate(START) {
                             popUpTo(Routes.ListProfile.route) {
@@ -51,7 +70,7 @@ fun ProfileScreen(navController: NavHostController) {
                     }
                     ) {
                         Icon(
-                            imageVector = Icons.Filled.ExitToApp,
+                            imageVector = Icons.AutoMirrored.Filled.ExitToApp,
                             contentDescription = "Выход"
                         )
                     }
@@ -137,4 +156,17 @@ fun TextComponent(header: String, value: String) {
         modifier = Modifier.padding(bottom = 12.dp)
 //        fontSize = 20.sp,
     )
+}
+
+
+fun formatPet(pet: Pet): String {
+    return buildString {
+        append("Кличка: ${pet.nickname}\n")
+        append("Вид: ${pet.view}\n")
+        append("Порода: ${pet.breed}\n")
+        append("Пол: ${pet.paul}\n")
+        append("Дата рождения: ${dateFormat.format(pet.birthday)}\n")
+        append("Окрас: ${pet.coat}\n")
+        append("Номер микрочипа: ${pet.microchipNumber}\n")
+    }
 }

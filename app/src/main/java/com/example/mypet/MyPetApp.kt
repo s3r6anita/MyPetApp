@@ -4,14 +4,14 @@ import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -22,6 +22,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.mypet.data.Pet
 import com.example.mypet.nav.BottomBarRoutes
 import com.example.mypet.nav.SetupNavGraphs
 import java.text.SimpleDateFormat
@@ -43,7 +44,7 @@ fun MyPetTopBar(
     actions: @Composable() (RowScope.() -> Unit),
     modifier: Modifier = Modifier
 ) {
-    CenterAlignedTopAppBar(
+    TopAppBar(
         title = {
             Text(text = text)
         },
@@ -52,7 +53,7 @@ fun MyPetTopBar(
             if (canNavigateBack) {
                 IconButton(onClick = navigateUp) {
                     Icon(
-                        imageVector = Icons.Filled.ArrowBack,
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = stringResource(R.string.back_button),
                     )
                 }
@@ -109,6 +110,7 @@ fun MyPetBottomBar(
 @Composable
 fun MyPetApp(
     context: Context,
+    pets: List<Pet>,
     navController: NavHostController = rememberNavController()
 //    viewModel: OrderViewModel = viewModel()
 ) {
@@ -118,7 +120,7 @@ fun MyPetApp(
     SetupNavGraphs(
         navController = navController,
         context = context,
-        modifier = Modifier
+        pets = pets,
     )
 }
 

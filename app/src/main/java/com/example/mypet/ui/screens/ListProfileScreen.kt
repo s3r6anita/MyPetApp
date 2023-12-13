@@ -18,7 +18,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -44,23 +43,9 @@ import com.example.mypet.R
 import com.example.mypet.data.Pet
 import com.example.mypet.nav.MAIN
 import com.example.mypet.nav.Routes
-import java.util.Date
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ListProfileScreen(navController: NavHostController, context: Context) {
-
-    val pets = mutableListOf(
-        Pet("Мурзик", "Кот", "Британская", "мужской", Date(), "черный", "123456789012345"),
-        Pet("Шарик", "Собака", "Дворняжка", "мужской", Date(), "рыжий", "234567890123456"),
-        Pet("Мася", "Кошка", "Персидская", "женский", Date(), "белый", "345678901234567"),
-//        Pet("Мурзик", "Кот", "Британская", "мужской", Date(), "черный", "123456789012345"),
-//        Pet("Шарик", "Собака", "Дворняжка", "мужской", Date(), "рыжий", "234567890123456"),
-//        Pet("Мася", "Кошка", "Персидская", "женский", Date(), "белый", "345678901234567"),
-//        Pet("Мурзик", "Кот", "Британская", "мужской", Date(), "черный", "123456789012345"),
-//        Pet("Шарик", "Собака", "Дворняжка", "мужской", Date(), "рыжий", "234567890123456"),
-//        Pet("Мася", "Кошка", "Персидская", "женский", Date(), "белый", "345678901234567")
-    )
+fun ListProfileScreen(navController: NavHostController, context: Context, pets: List<Pet>) {
 
     val preferences = context.getSharedPreferences("pref", Context.MODE_PRIVATE)
     val value = preferences.getBoolean("key", true)
@@ -169,7 +154,6 @@ fun ListProfileScreen(navController: NavHostController, context: Context) {
 
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PetItem(pet: Pet, canExit: Boolean, navController: NavHostController) {
     ListItem(
@@ -187,13 +171,13 @@ fun PetItem(pet: Pet, canExit: Boolean, navController: NavHostController) {
                     }
                 }
             },
-        headlineText = { Text(text = "${pet.nickname}") },
+        headlineContent = { Text(text = "${pet.nickname}") },
         leadingContent = {
             Icon(
                 painter = painterResource(R.drawable.pets_icon),
                 contentDescription = "Иконка питомца"
             )
         },
-        overlineText = { Text("${pet.view} ") }
+        overlineContent = { Text("${pet.view} ") }
     )
 }

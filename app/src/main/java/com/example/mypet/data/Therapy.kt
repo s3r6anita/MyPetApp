@@ -7,13 +7,14 @@ sealed class TherapyType(val name: String) {
     object Illness: TherapyType("Болезнь")
     object Vaccination: TherapyType("Вакцинация")
     object Analysis : TherapyType("Анализ")
-    object VisitDoctor : TherapyType("Посещегние врача")
+    object VisitDoctor : TherapyType("Посещение врача")
+    class User(name: String) : TherapyType(name)
 }
 
 // Создаем класс для терапий
 data class Therapy(
-    val type: TherapyType,
-    val name: String,
-    val info: String,
-    val date: Date
+    var type: TherapyType,
+    var name: String,
+    var notes: String,
+    var date: Date
 )

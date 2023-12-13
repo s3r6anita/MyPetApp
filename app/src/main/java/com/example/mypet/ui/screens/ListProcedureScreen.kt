@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Done
@@ -19,20 +18,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.mypet.MyPetBottomBar
 import com.example.mypet.MyPetTopBar
 import com.example.mypet.R
 import com.example.mypet.data.Procedure
-import com.example.mypet.data.ProcedureSettings
-import com.example.mypet.data.ProcedureType
+import com.example.mypet.data.pets
 import com.example.mypet.dateFormat
 import com.example.mypet.nav.BottomBarRoutes
 import com.example.mypet.nav.Routes
 import com.example.mypet.timeFormat
-import java.util.Date
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -40,18 +36,14 @@ import java.util.Date
 @Composable
 fun ListProcedureScreen(navController: NavHostController) {
 
-    val procedures = mutableListOf<Procedure>(
-        Procedure(ProcedureType.HairCut, true, Date(), Date(), ProcedureSettings("20:00", "ежедневно", true)),
-        Procedure(ProcedureType.NailTrim, true, Date(), Date(), ProcedureSettings("12:00", "еженедельно", true)),
-        Procedure(ProcedureType.TeethCleaning, false, Date(), Date(), ProcedureSettings("08:00", "ежедневно", true)),
-        Procedure(ProcedureType.PawTreatment, false, Date(), Date(), ProcedureSettings("10:00", "ежемесячно", true)),
-        Procedure(ProcedureType.Another("Новый вид процедуры"), false, Date(), Date(), ProcedureSettings("12:00", "ежедневно", true))
-    )
+    val pet = pets[0]
+
+    val procedures = pet.procedures
 
     Scaffold (
         topBar = {
             MyPetTopBar(
-                text = stringResource(R.string.app_name),
+                text = "${pet.nickname}",
                 canNavigateBack = false,
                 navigateUp = { navController.navigateUp() },
                 actions = {
@@ -109,8 +101,8 @@ fun ProcedureItem(
     navController: NavHostController
 ) {
     ListItem(
-        headlineText = { Text(text = procedure.type.name) },
-        supportingText = {
+        headlineContent = { Text(text = procedure.type.name) },
+        supportingContent = {
             Text(text = dateFormat.format(procedure.dateDone))
             Text(text = timeFormat.format(procedure.timeDone))
         },

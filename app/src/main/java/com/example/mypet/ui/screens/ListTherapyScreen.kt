@@ -17,35 +17,28 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.mypet.MyPetBottomBar
 import com.example.mypet.MyPetTopBar
 import com.example.mypet.R
 import com.example.mypet.data.Therapy
-import com.example.mypet.data.TherapyType
+import com.example.mypet.data.pets
 import com.example.mypet.dateFormat
 import com.example.mypet.nav.BottomBarRoutes
 import com.example.mypet.nav.Routes
-import java.util.Date
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListTherapyScreen(navController: NavHostController) {
 
-    val therapies = mutableListOf<Therapy>(
-        Therapy(TherapyType.Illness, "Грипп", "Болел 3 дня. В качестве лечения использовались *** по 1 таблетке 3 раза в день", Date()),
-        Therapy(TherapyType.Vaccination, "Прививка от кори", "Прививка сделана в области плеча", Date()),
-        Therapy(TherapyType.Analysis, "Анализ крови", "Анализ не дал признаков каких-либо заболеваний. Питомец здоров.", Date()),
-        Therapy(TherapyType.VisitDoctor, "Посещение терапевта", "Проведена консультация наоснове результатов анализа от 11.11.2023", Date()),
-    )
+    val pet = pets[0]
+
+    val therapies = pet.therapies
 
     Scaffold(
         topBar = {
             MyPetTopBar(
-                text = stringResource(R.string.app_name),
+                text = "${pet.nickname}",
                 canNavigateBack = false,
                 navigateUp = { navController.navigateUp() },
                 actions = {
@@ -95,15 +88,14 @@ fun ListTherapyScreen(navController: NavHostController) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TherapyItem(
     therapy: Therapy,
     navController: NavHostController
 ) {
     ListItem(
-        headlineText = { Text(text = therapy.type.name) },
-        supportingText = {
+        headlineContent = { Text(text = therapy.type.name) },
+        supportingContent = {
             Text(text = dateFormat.format(therapy.date))
         },
         trailingContent = { },

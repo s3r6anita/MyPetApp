@@ -8,10 +8,15 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -24,7 +29,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.mypet.MyPetTopBar
 import com.example.mypet.nav.Routes
@@ -36,7 +40,12 @@ import com.example.mypet.nav.Routes
 @Composable
 fun BugReportScreen(navController: NavHostController, context: Context) {
 
+    var mutableSubject by remember { mutableStateOf("") }
+    var mutableMessage by remember { mutableStateOf("") }
     var openAlertDialog by remember { mutableStateOf(false) }
+
+    val email = "supp0rt_app@mail.ru"
+
     when {
         openAlertDialog -> {
             CustomAlertDialog(
@@ -52,13 +61,10 @@ fun BugReportScreen(navController: NavHostController, context: Context) {
                     }
 
                     // логика создания наполнения письма и его отправки
-                    val email = "supp0rt_app@mail.ru"
-                    val subject = "Ошибка в работе приложения"
-                    val message = "Оно не работает!!!"
 
                     val intent = Intent(Intent.ACTION_SENDTO).apply {
                         type = "text/plain"
-                        data = Uri.parse("mailto:$email?subject=$subject&body=$message")
+                        data = Uri.parse("mailto:$email?subject=$mutableSubject&body=$mutableMessage")
                     }
 
                     try{
@@ -83,16 +89,41 @@ fun BugReportScreen(navController: NavHostController, context: Context) {
             )
         },
     ) { innerPadding ->
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding),
+                .padding(innerPadding)
+                .padding(horizontal = 20.dp)
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(
-                text = "Bug Report",
-                fontSize = 30.sp
+
+            // заголовок
+            OutlinedTextField(
+                value = mutableSubject,
+                maxLines = 1,
+                onValueChange = { mutableSubject = it },
+                label = { Text("Ошибка") },
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+
+
+            // сообщение
+            OutlinedTextField(
+                value = mutableMessage,
+                readOnly = true,
+                singleLine = false,
+                maxLines = 100,
+                onValueChange = { mutableMessage = it },
+                label = { Text("Подробное описание ошибки") },
+                placeholder = { Text(text = "Когда, Что и Где сломалось") },
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 10.dp)
+                    .height(400.dp)
             )
             Button(
                 modifier = Modifier.padding(10.dp),
