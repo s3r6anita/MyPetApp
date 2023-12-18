@@ -5,10 +5,10 @@ import androidx.compose.animation.EnterTransition
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import com.example.mypet.data.Pet
+import kotlinx.coroutines.CoroutineScope
 
 @Composable
-fun SetupNavGraphs(navController: NavHostController, context: Context, pets: List<Pet>) {
+fun SetupNavGraphs(navController: NavHostController, context: Context, scope: CoroutineScope) {
     NavHost(
         navController = navController,
         route = ROOT,
@@ -19,7 +19,7 @@ fun SetupNavGraphs(navController: NavHostController, context: Context, pets: Lis
 //        popEnterTransition = { EnterTransition.None },
 //        popExitTransition = { ExitTransition.None },
     ) {
-        StartNavGraph(navController, context, pets)
+        StartNavGraph(navController, context, scope)
         MainNavGraph(navController)
     }
 }

@@ -53,7 +53,9 @@ import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateTherapyScreen(navController: NavHostController, context: Context) {
+fun CreateTherapyScreen(navController: NavHostController, context: Context, profileId: String?) {
+
+    val id = profileId?.toInt() ?: 0
 
     var mutableTherapy by remember { mutableStateOf(Therapy(TherapyType.Illness, name = "", notes = "", date = Date())) }
 
@@ -224,16 +226,16 @@ fun CreateTherapyScreen(navController: NavHostController, context: Context) {
                         )
 
                         // добавление в список лечений
-                        pets[0].therapies += mutableTherapy //TODO поменять индекс
+                        pets[id].therapies += mutableTherapy
 
                         Toast.makeText(
                             context,
                             "Терапия успешно добавлено",
-                            Toast.LENGTH_LONG
+                            Toast.LENGTH_SHORT
                         ).show()
 
-                        navController.navigate(BottomBarRoutes.ListTherapy.route) {
-                            popUpTo(BottomBarRoutes.ListTherapy.route) {
+                        navController.navigate(BottomBarRoutes.ListTherapy.route + "/" + profileId) {
+                            popUpTo(BottomBarRoutes.ListTherapy.route + "/" + profileId) {
                                 inclusive = true
                             }
                             launchSingleTop = true

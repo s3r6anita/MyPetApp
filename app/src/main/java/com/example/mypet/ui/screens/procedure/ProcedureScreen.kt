@@ -15,6 +15,7 @@ import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Info
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -23,7 +24,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -36,14 +42,55 @@ import com.example.mypet.data.pets
 import com.example.mypet.dateFormat
 import com.example.mypet.nav.Routes
 import com.example.mypet.timeFormat
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Date
 
 @Composable
-fun ProcedureScreen(navController: NavHostController) {
+fun ProcedureScreen(navController: NavHostController, profileId: String?, procedureId: String?, scope: CoroutineScope) {
 
-    val procedure = pets[0].procedures[0]
+    val procedure = pets[profileId?.toInt() ?: 0].procedures[procedureId?.toInt() ?: 0]
+    var openAlertDialog by remember { mutableStateOf(false) }
 
-//    val procedure = procedures[0]
+    if (openAlertDialog) {
+        AlertDialog(
+            title = {
+                Text(text = "Удаление процедуры")
+            },
+            text = {
+                Text(text = "Вы уверены, что хотите удалить процедуру?")
+            },
+            onDismissRequest = {
+                openAlertDialog = false
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        openAlertDialog = false
+                        navController.navigateUp()
+                        scope.launch {
+                            delay(100)
+                            removeRrocedure(profileId, procedureId)
+                        }
+                    }
+                ) {
+                    Text("ОК")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        openAlertDialog = false
+                    }
+                ) {
+                    Text("Отмена")
+                }
+            }
+        )
+    }
 
     Scaffold(
         topBar = {
@@ -52,7 +99,9 @@ fun ProcedureScreen(navController: NavHostController) {
                 canNavigateBack = navController.previousBackStackEntry != null,
                 navigateUp = { navController.navigateUp() },
                 actions = {
-                    IconButton(onClick = { }
+                    IconButton(onClick = {
+                        openAlertDialog = true
+                    }
                     ) {
                         Icon(
                             imageVector = Icons.Filled.Delete,
@@ -65,7 +114,9 @@ fun ProcedureScreen(navController: NavHostController) {
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    navController.navigate(Routes.UpdateProcedure.route) { launchSingleTop = true }
+                    navController.navigate(Routes.UpdateProcedure.route +  "/" + profileId + "/" + procedureId) {
+                        launchSingleTop = true
+                    }
                 },
                 modifier = Modifier
             ) {
@@ -110,11 +161,11 @@ fun ProcedureScreen(navController: NavHostController) {
 
             // дата и время выполенения
             Text(
-                text = "${timeFormat.format(procedure.timeDone)}",
+                text = timeFormat.format(procedure.timeDone),
                 style = MaterialTheme.typography.titleMedium
             )
             Text(
-                text = "${dateFormat.format(procedure.dateDone)}",
+                text = dateFormat.format(procedure.dateDone),
                 style = MaterialTheme.typography.titleMedium
             )
 
@@ -151,5 +202,11 @@ fun ProcedureScreen(navController: NavHostController) {
                     .padding(bottom = 20.dp)
             )
         }
+    }
+}
+
+suspend fun removeRrocedure(profileId: String?, procedureId: String?) {
+    withContext(Dispatchers.IO) {
+        pets[profileId?.toInt() ?: 0].procedures.removeAt(procedureId?.toInt() ?: 0)
     }
 }

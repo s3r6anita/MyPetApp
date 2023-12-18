@@ -39,13 +39,15 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.edit
 import androidx.navigation.NavHostController
 import com.example.mypet.MyPetTopBar
+import com.example.mypet.PetsViewModel
 import com.example.mypet.R
 import com.example.mypet.data.Pet
-import com.example.mypet.nav.MAIN
+import com.example.mypet.nav.BottomBarRoutes
 import com.example.mypet.nav.Routes
 
+
 @Composable
-fun ListProfileScreen(navController: NavHostController, context: Context, pets: List<Pet>) {
+fun ListProfileScreen(navController: NavHostController, context: Context, viewModel: PetsViewModel) {
 
     val preferences = context.getSharedPreferences("pref", Context.MODE_PRIVATE)
     val value = preferences.getBoolean("key", true)
@@ -138,9 +140,11 @@ fun ListProfileScreen(navController: NavHostController, context: Context, pets: 
                             .fillMaxSize()
                             .verticalScroll(scrollState)
                     ) {
-                        pets.forEach { pet ->
+                        val pets = viewModel.getPets()
+                        pets.forEachIndexed { index, pet ->
                             PetItem(
                                 pet = pet,
+                                index = index,
                                 canExit = rememberUserChoice,
                                 navController = navController
                             )
@@ -155,13 +159,13 @@ fun ListProfileScreen(navController: NavHostController, context: Context, pets: 
 
 
 @Composable
-fun PetItem(pet: Pet, canExit: Boolean, navController: NavHostController) {
+fun PetItem(pet: Pet, index: Int, canExit: Boolean, navController: NavHostController) {
     ListItem(
         modifier = Modifier
             .padding(vertical = 8.dp, horizontal = 16.dp)
             .background(Color.Red)
             .clickable {
-                navController.navigate(MAIN) {
+                navController.navigate(BottomBarRoutes.ListProcedure.route + "/$index") {
                     if (canExit) {
                         popUpTo(navController.graph.startDestinationId) {
                             saveState = true
@@ -171,13 +175,13 @@ fun PetItem(pet: Pet, canExit: Boolean, navController: NavHostController) {
                     }
                 }
             },
-        headlineContent = { Text(text = "${pet.nickname}") },
+        headlineContent = { Text(text = pet.nickname) },
         leadingContent = {
             Icon(
                 painter = painterResource(R.drawable.pets_icon),
                 contentDescription = "Иконка питомца"
             )
         },
-        overlineContent = { Text("${pet.view} ") }
+        overlineContent = { Text(pet.view) }
     )
 }

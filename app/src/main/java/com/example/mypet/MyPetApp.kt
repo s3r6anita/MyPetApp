@@ -22,9 +22,9 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.mypet.data.Pet
 import com.example.mypet.nav.BottomBarRoutes
 import com.example.mypet.nav.SetupNavGraphs
+import kotlinx.coroutines.CoroutineScope
 import java.text.SimpleDateFormat
 
 // Формат даты и времени в приложении
@@ -68,6 +68,7 @@ fun MyPetTopBar(
 @Composable
 fun MyPetBottomBar(
     navController: NavHostController,
+    profileId: String?,
     items: List<BottomBarRoutes>,
     modifier: Modifier = Modifier
 ) {
@@ -88,14 +89,14 @@ fun MyPetBottomBar(
                 label = { Text(text = stringResource(item.title)) },
                 selected = currentScreen == item.route,
                 onClick = {
-                    navController.navigate(item.route) {
+                    navController.navigate(item.route + "/" + profileId) {
                         popUpTo(navController.graph.findStartDestination().id) {
                             saveState = true
                         }
                         launchSingleTop = true
                         restoreState = true
 
-                        popUpTo(BottomBarRoutes.ListProcedure.route) {
+                        popUpTo(BottomBarRoutes.ListProcedure.route + "/" + profileId) {
                             saveState = false
                         }
                         launchSingleTop = true
@@ -110,7 +111,7 @@ fun MyPetBottomBar(
 @Composable
 fun MyPetApp(
     context: Context,
-    pets: List<Pet>,
+    scope: CoroutineScope,
     navController: NavHostController = rememberNavController()
 //    viewModel: OrderViewModel = viewModel()
 ) {
@@ -120,7 +121,7 @@ fun MyPetApp(
     SetupNavGraphs(
         navController = navController,
         context = context,
-        pets = pets,
+        scope = scope
     )
 }
 

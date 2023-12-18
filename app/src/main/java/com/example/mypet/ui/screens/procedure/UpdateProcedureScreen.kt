@@ -63,13 +63,13 @@ import com.example.mypet.validateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UpdateProcedureScreen(navController: NavHostController, context: Context) {
+fun UpdateProcedureScreen(navController: NavHostController, context: Context, profileId: String?, procedureId: String?) {
 
-    val procedures = pets[0].procedures
+    val procedure = pets[profileId?.toInt() ?: 0].procedures[procedureId?.toInt() ?: 0]
 
     var mutableProc by remember {
         mutableStateOf(
-            procedures[0]
+            procedure
         )
     }
 
@@ -79,7 +79,7 @@ fun UpdateProcedureScreen(navController: NavHostController, context: Context) {
                 text = stringResource(Routes.UpdateProcedure.title),
                 canNavigateBack = navController.previousBackStackEntry != null,
                 navigateUp = { navController.navigateUp() },
-                actions = {}
+                actions = { }
             )
         },
     ) { innerPadding ->
@@ -485,7 +485,7 @@ fun UpdateProcedureScreen(navController: NavHostController, context: Context) {
                                 "Обработка от блох" -> ProcedureType.FleaTreatment
                                 else -> ProcedureType.User(selectedName)
                             },
-                            isDone = false,
+                            isDone = isDone,
                             frequency = when (selectedFrequency) {
                                 "указать в часах" -> frequencyString.toInt() * 1
                                 "указать в днях" -> frequencyString.toInt() * 24
@@ -502,7 +502,7 @@ fun UpdateProcedureScreen(navController: NavHostController, context: Context) {
                         )
 
                         // изменение процедуры в списке
-                        procedures[0].let { // TODO поменять индекс
+                        procedure.let {
                             it.type = mutableProc.type
                             it.isDone = mutableProc.isDone
                             it.frequency = mutableProc.frequency
@@ -516,11 +516,11 @@ fun UpdateProcedureScreen(navController: NavHostController, context: Context) {
                         Toast.makeText(
                             context,
                             "Процедура успешно изменена",
-                            Toast.LENGTH_LONG
+                            Toast.LENGTH_SHORT
                         ).show()
 
-                        navController.navigate(Routes.Procedure.route) {
-                            popUpTo(Routes.Procedure.route) {
+                        navController.navigate(Routes.Procedure.route  + "/" + profileId + "/" + procedureId) {
+                            popUpTo(Routes.Procedure.route  + "/" + profileId + "/" + procedureId) {
                                 inclusive = true
                             }
                             launchSingleTop = true

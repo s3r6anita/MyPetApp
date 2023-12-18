@@ -9,8 +9,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -18,7 +20,12 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -30,11 +37,62 @@ import com.example.mypet.data.pets
 import com.example.mypet.dateFormat
 import com.example.mypet.nav.Routes
 import com.example.mypet.nav.START
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
+@OptIn(InternalCoroutinesApi::class)
 @Composable
-fun ProfileScreen(navController: NavHostController, context: Context) {
+fun ProfileScreen(navController: NavHostController, context: Context, profileId: String?, scope: CoroutineScope) {
 
-    val pet = pets[0]
+    val id = profileId?.toInt() ?: 0
+    val pet = pets[id]
+    var openAlertDialog by remember { mutableStateOf(false) }
+
+    if (openAlertDialog) {
+        AlertDialog(
+            title = {
+                Text(text = "Удаление профиля")
+            },
+            text = {
+                Text(text = "Вы уверены, что хотите удалить профиль?")
+            },
+            onDismissRequest = {
+                openAlertDialog = false
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        openAlertDialog = false
+                        navController.navigate(START) {
+                            popUpTo(Routes.ListProfile.route) {
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                        }
+                        scope.launch {
+                            delay(100)
+                            removePet(id)
+                        }
+                    }
+                ) {
+                    Text("ОК")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        openAlertDialog = false
+                    }
+                ) {
+                    Text("Отмена")
+                }
+            }
+        )
+    }
 
     Scaffold(
         topBar = {
@@ -43,6 +101,17 @@ fun ProfileScreen(navController: NavHostController, context: Context) {
                 canNavigateBack = navController.previousBackStackEntry != null,
                 navigateUp = { navController.navigateUp() },
                 actions = {
+                    // кнопка удалить
+                    IconButton(onClick = {
+                        openAlertDialog = true
+                    }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Удалить"
+                        )
+                    }
+                    // кнопка поделиться
                     IconButton(onClick = {
                         val message = formatPet(pet)
                         val intent = Intent(Intent.ACTION_SEND).apply {
@@ -52,14 +121,15 @@ fun ProfileScreen(navController: NavHostController, context: Context) {
                         try{
                             context.startActivity(Intent.createChooser(intent, "Отправить сведения о питомце"))
                         } catch (e: Exception) {
-                            Toast.makeText(context, "Произошла ошибка", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Произошла ошибка", Toast.LENGTH_LONG).show()
                         }          }
                     ) {
                         Icon(
                             imageVector = Icons.Default.Share,
-                            contentDescription = "Выход"
+                            contentDescription = "Поделиться"
                         )
                     }
+                    // кнопка выхода
                     IconButton(onClick = {
                         navController.navigate(START) {
                             popUpTo(Routes.ListProfile.route) {
@@ -81,7 +151,7 @@ fun ProfileScreen(navController: NavHostController, context: Context) {
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    navController.navigate(Routes.UpdateProfile.route) {
+                    navController.navigate(Routes.UpdateProfile.route + "/" + profileId) {
                         launchSingleTop = true
                     }
                 },
@@ -168,5 +238,12 @@ fun formatPet(pet: Pet): String {
         append("Дата рождения: ${dateFormat.format(pet.birthday)}\n")
         append("Окрас: ${pet.coat}\n")
         append("Номер микрочипа: ${pet.microchipNumber}\n")
+    }
+}
+
+
+suspend fun removePet(id: Int) {
+    withContext(Dispatchers.IO) {
+        pets.removeAt(id)
     }
 }

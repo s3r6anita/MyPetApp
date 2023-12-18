@@ -50,11 +50,11 @@ import com.example.mypet.validateDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UpdateTherapyScreen(navController: NavHostController, context: Context) {
+fun UpdateTherapyScreen(navController: NavHostController, context: Context, profileId: String?, therapyId: String?) {
 
-    var therapies = pets[0].therapies
+    val therapy = pets[profileId?.toInt() ?: 0].therapies[therapyId?.toInt() ?: 0]
 
-    var mutableTherapy by remember { mutableStateOf(pets[0].therapies[0]) }
+    var mutableTherapy by remember { mutableStateOf(therapy) }
 
     Scaffold (
         topBar = {
@@ -225,7 +225,7 @@ fun UpdateTherapyScreen(navController: NavHostController, context: Context) {
                         // добавление в список терапий
 
 //       не нужно потому что уже в mutableTherapy лежит ссылка
-                        therapies[0].let { // TODO поменять индекс
+                        therapy.let {
                             it.type = mutableTherapy.type
                             it.name = mutableTherapy.name
                             it.notes = mutableTherapy.notes
@@ -235,11 +235,11 @@ fun UpdateTherapyScreen(navController: NavHostController, context: Context) {
                         Toast.makeText(
                             context,
                             "Терапия успешно добавлено",
-                            Toast.LENGTH_LONG
+                            Toast.LENGTH_SHORT
                         ).show()
 
-                        navController.navigate(Routes.Therapy.route) {
-                            popUpTo(Routes.Therapy.route) {
+                        navController.navigate(Routes.Therapy.route + "/" + profileId + "/" + therapyId) {
+                            popUpTo(Routes.Therapy.route + "/" + profileId + "/" + therapyId) {
                                 inclusive = true
                             }
                             launchSingleTop = true

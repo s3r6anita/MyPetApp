@@ -5,10 +5,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Done
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -32,18 +33,17 @@ import com.example.mypet.timeFormat
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ListProcedureScreen(navController: NavHostController) {
+fun ListProcedureScreen(navController: NavHostController, profileId: String?) {
 
-    val pet = pets[0]
-
+    val id = profileId?.toInt() ?: 0
+    val pet = pets[id]
     val procedures = pet.procedures
 
     Scaffold (
         topBar = {
             MyPetTopBar(
-                text = "${pet.nickname}",
+                text = pet.nickname,
                 canNavigateBack = false,
                 navigateUp = { navController.navigateUp() },
                 actions = {
@@ -51,7 +51,7 @@ fun ListProcedureScreen(navController: NavHostController) {
                         painter = painterResource(R.drawable.pets_icon),
                         contentDescription = "Ваш питомец",
                         modifier = Modifier
-                            .clickable { navController.navigate(Routes.Profile.route) }
+                            .clickable { navController.navigate(Routes.Profile.route + "/" + profileId) }
                             .padding(10.dp, 0.dp)
                     )
                 }
@@ -60,6 +60,7 @@ fun ListProcedureScreen(navController: NavHostController) {
         bottomBar = {
             MyPetBottomBar(
                 navController = navController,
+                profileId,
                 listOf(
                     BottomBarRoutes.ListProcedure,
                     BottomBarRoutes.ListTherapy
@@ -69,7 +70,9 @@ fun ListProcedureScreen(navController: NavHostController) {
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    navController.navigate(Routes.CreateProcedure.route) { launchSingleTop = true }
+                    navController.navigate(Routes.CreateProcedure.route  + "/" + profileId) {
+                        launchSingleTop = true
+                    }
                 },
                 modifier = Modifier
             ) {
@@ -83,10 +86,13 @@ fun ListProcedureScreen(navController: NavHostController) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(innerPadding)
+                .verticalScroll(rememberScrollState())
         ) {
-            procedures.forEach { item ->
+            procedures.forEachIndexed { index, item ->
                 ProcedureItem(
                     procedure = item,
+                    index = index,
+                    profileId = profileId,
                     navController = navController
                 )
             }
@@ -94,10 +100,11 @@ fun ListProcedureScreen(navController: NavHostController) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProcedureItem(
     procedure: Procedure,
+    index: Int,
+    profileId: String?,
     navController: NavHostController
 ) {
     ListItem(
@@ -113,7 +120,7 @@ fun ProcedureItem(
         },
         modifier = Modifier
             .clickable {
-                navController.navigate(Routes.Procedure.route) {
+                navController.navigate(Routes.Procedure.route + "/" + profileId + "/" + "$index") {
                     launchSingleTop = true
                 }
             }

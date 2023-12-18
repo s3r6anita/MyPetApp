@@ -161,7 +161,7 @@ fun CustomAlertDialog(
                     onConfirmation()
                 }
             ) {
-                Text("Подтвердить")
+                Text("ОК")
             }
         },
         dismissButton = {

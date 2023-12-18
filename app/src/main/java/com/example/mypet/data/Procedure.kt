@@ -4,8 +4,8 @@ import java.util.Date
 
 // Создаем перечисление для видов процедуры
 sealed class ProcedureType(val name: String, val type: String) {
-    object HairCut: ProcedureType("Стрижка шерсти", "Гигиеническая")
-    object NailTrim: ProcedureType("Стрижка когтей", "Гигиеническая")
+    object HairCut : ProcedureType("Стрижка шерсти", "Гигиеническая")
+    object NailTrim : ProcedureType("Стрижка когтей", "Гигиеническая")
     object TeethCleaning : ProcedureType("Чистка зубов", "Гигиеническая")
     object PawTreatment : ProcedureType("Обработка лап", "Гигиеническая")
     object TakeMedications : ProcedureType("Прием лекарств и витаминов", "Медицинская")

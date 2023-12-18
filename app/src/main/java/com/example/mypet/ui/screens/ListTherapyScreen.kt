@@ -1,13 +1,13 @@
 package com.example.mypet.ui.screens
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -29,16 +29,17 @@ import com.example.mypet.nav.BottomBarRoutes
 import com.example.mypet.nav.Routes
 
 @Composable
-fun ListTherapyScreen(navController: NavHostController) {
+fun ListTherapyScreen(navController: NavHostController, profileId: String?) {
 
-    val pet = pets[0]
+    val id = profileId?.toInt() ?: 0
+    val pet = pets[id]
 
     val therapies = pet.therapies
 
     Scaffold(
         topBar = {
             MyPetTopBar(
-                text = "${pet.nickname}",
+                text = pet.nickname,
                 canNavigateBack = false,
                 navigateUp = { navController.navigateUp() },
                 actions = {
@@ -46,7 +47,7 @@ fun ListTherapyScreen(navController: NavHostController) {
                         painter = painterResource(R.drawable.pets_icon),
                         contentDescription = "Ваш питомец",
                         modifier = Modifier
-                            .clickable { navController.navigate(Routes.Profile.route) }
+                            .clickable { navController.navigate(Routes.Profile.route + "/" + profileId) }
                             .padding(10.dp, 0.dp)
                     )
                 }
@@ -55,6 +56,7 @@ fun ListTherapyScreen(navController: NavHostController) {
         bottomBar = {
             MyPetBottomBar(
                 navController = navController,
+                profileId,
                 listOf(
                     BottomBarRoutes.ListProcedure,
                     BottomBarRoutes.ListTherapy
@@ -64,7 +66,9 @@ fun ListTherapyScreen(navController: NavHostController) {
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    navController.navigate(Routes.CreateTherapy.route) { launchSingleTop = true }
+                    navController.navigate(Routes.CreateTherapy.route + "/" + profileId) {
+                        launchSingleTop = true
+                    }
                 },
                 modifier = Modifier
             ) {
@@ -77,10 +81,13 @@ fun ListTherapyScreen(navController: NavHostController) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(innerPadding)
+                .verticalScroll(rememberScrollState())
         ) {
-            therapies.forEach { item ->
+            therapies.forEachIndexed { index, item ->
                 TherapyItem(
                     therapy = item,
+                    index = index,
+                    profileId = profileId,
                     navController = navController
                 )
             }
@@ -91,6 +98,8 @@ fun ListTherapyScreen(navController: NavHostController) {
 @Composable
 fun TherapyItem(
     therapy: Therapy,
+    index: Int,
+    profileId: String?,
     navController: NavHostController
 ) {
     ListItem(
@@ -101,7 +110,7 @@ fun TherapyItem(
         trailingContent = { },
         modifier = Modifier
             .clickable {
-                navController.navigate(Routes.Therapy.route) {
+                navController.navigate(Routes.Therapy.route + "/" + profileId + "/" + "$index") {
                     launchSingleTop = true
                 }
             }

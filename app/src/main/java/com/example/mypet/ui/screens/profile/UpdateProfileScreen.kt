@@ -54,9 +54,10 @@ const val CORRECT_TIME_DIGIT_NUMBER = 5
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UpdateProfileScreen(navController: NavHostController, context: Context) {
+fun UpdateProfileScreen(navController: NavHostController, context: Context, profileId: String?) {
 
-    var pet = pets[0]
+    val id = profileId?.toInt() ?: 0
+    var pet = pets[id]
     var mutablePet by remember { mutableStateOf(pet) }
 
     Scaffold(
@@ -65,7 +66,7 @@ fun UpdateProfileScreen(navController: NavHostController, context: Context) {
                 text = stringResource(Routes.UpdateProfile.title),
                 canNavigateBack = navController.previousBackStackEntry != null,
                 navigateUp = { navController.navigateUp() },
-                actions = {}
+                actions = { }
             )
         },
     ) { innerPadding ->
@@ -259,8 +260,8 @@ fun UpdateProfileScreen(navController: NavHostController, context: Context) {
 
                         // Временная переменная замещает основную
                         if (pet != mutablePet) {
-                            pet = mutablePet
-                            Toast.makeText(context, "Данные изменены", Toast.LENGTH_LONG).show()
+                            pets[id] = mutablePet
+                            Toast.makeText(context, "Данные изменены", Toast.LENGTH_SHORT).show()
                         }
 
                         navController.navigateUp()

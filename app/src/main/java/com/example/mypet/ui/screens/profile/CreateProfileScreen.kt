@@ -55,7 +55,7 @@ import java.util.Date
 @Composable
 fun CreateProfileScreen(navController: NavHostController, context: Context) {
 
-    var mutablePet by remember { mutableStateOf(Pet("", "", "", "", Date(), "", "", emptyList(), emptyList())) }
+    var mutablePet by remember { mutableStateOf(Pet("", "", "", "", Date(), "", "", mutableListOf(), mutableListOf())) }
 
     Scaffold(
         topBar = {
@@ -259,7 +259,7 @@ fun CreateProfileScreen(navController: NavHostController, context: Context) {
                         Toast.makeText(
                             context,
                             "Питомец успешно добавлен",
-                            Toast.LENGTH_LONG
+                            Toast.LENGTH_SHORT
                         ).show()
 
                         navController.navigate(Routes.ListProfile.route) {

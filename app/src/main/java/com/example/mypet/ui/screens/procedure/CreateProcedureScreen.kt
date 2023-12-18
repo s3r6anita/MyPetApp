@@ -66,7 +66,9 @@ import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateProcedureScreen(navController: NavHostController, context: Context) {
+fun CreateProcedureScreen(navController: NavHostController, context: Context, profileId: String?) {
+
+    val id = profileId?.toInt() ?: 0
 
     var mutableProc by remember {
         mutableStateOf(
@@ -220,7 +222,9 @@ fun CreateProcedureScreen(navController: NavHostController, context: Context) {
                         selectedName = it
                     }, // { mutableProc = mutableProc.copy(type = ProcedureType.User(it)) },
                     label = { Text("Название") },
-                    modifier = modifier
+                    modifier = Modifier
+                        .padding(bottom = 10.dp, start = 30.dp, end = 30.dp)
+                        .fillMaxWidth()
                 )
             }
 
@@ -481,17 +485,17 @@ fun CreateProcedureScreen(navController: NavHostController, context: Context) {
                             )
                         )
 
-                        // добавление в список gпроцедур
-                        pets[0].procedures += mutableProc //TODO поменять индекс
+                        // добавление в список процедур
+                        pets[id].procedures += mutableProc
 
                         Toast.makeText(
                             context,
-                            "Процедура успешно добавлен",
-                            Toast.LENGTH_LONG
+                            "Процедура успешно добавлена",
+                            Toast.LENGTH_SHORT
                         ).show()
 
-                        navController.navigate(BottomBarRoutes.ListProcedure.route) {
-                            popUpTo(BottomBarRoutes.ListProcedure.route) {
+                        navController.navigate(BottomBarRoutes.ListProcedure.route + "/" + profileId) {
+                            popUpTo(BottomBarRoutes.ListProcedure.route + "/" + profileId) {
                                 inclusive = true
                             }
                             launchSingleTop = true
