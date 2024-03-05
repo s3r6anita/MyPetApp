@@ -39,15 +39,15 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.edit
 import androidx.navigation.NavHostController
 import com.example.mypet.MyPetTopBar
-import com.example.mypet.PetsViewModel
 import com.example.mypet.R
 import com.example.mypet.data.Pet
+import com.example.mypet.data.pets
 import com.example.mypet.nav.BottomBarRoutes
 import com.example.mypet.nav.Routes
 
 
 @Composable
-fun ListProfileScreen(navController: NavHostController, context: Context, viewModel: PetsViewModel) {
+fun ListProfileScreen(navController: NavHostController, context: Context) {
 
     val preferences = context.getSharedPreferences("pref", Context.MODE_PRIVATE)
     val value = preferences.getBoolean("key", true)
@@ -140,7 +140,6 @@ fun ListProfileScreen(navController: NavHostController, context: Context, viewMo
                             .fillMaxSize()
                             .verticalScroll(scrollState)
                     ) {
-                        val pets = viewModel.getPets()
                         pets.forEachIndexed { index, pet ->
                             PetItem(
                                 pet = pet,
